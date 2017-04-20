@@ -21,6 +21,7 @@ def create_board(width, height):
                     board_row.append(" ")
         board.append(board_row)
 
+
     return board
 
 
@@ -80,9 +81,13 @@ def main():
         character = getch()
         force_exit(character)
         os.system('clear')
-        board = create_board(100,30)
+        board = create_board(100,30)# Średnio bo średnio ale jako tako działa
         board_with_player = insert_player(board, x_pos + x_movement(character), y_pos + y_movement(character) )
-        print_board(board_with_player)
-        x_pos = x_pos + x_movement(character)
-        y_pos = y_pos + y_movement(character)
+        if board[x_pos + x_movement(character)][y_pos + y_movement(character)] != 'X':
+            x_pos = x_pos + x_movement(character)
+            y_pos = y_pos + y_movement(character)
+            print_board(board_with_player)
+        else:
+            print_board(board_with_player)
+
 main()

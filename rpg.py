@@ -3,6 +3,9 @@ from time import sleep
 import os
 
 
+def cls():
+    os.system('cls' if os.name=='nt' else 'clear')
+
 def create_board(width, height):
     board = []
 
@@ -33,15 +36,53 @@ def insert_player(board, width, height):
     return board
 
 
+def getch():
+    import sys, tty, termios
+    fd = sys.stdin.fileno()
+    old_settings = termios.tcgetattr(fd)
+    try:
+        tty.setraw(sys.stdin.fileno())
+        ch = sys.stdin.read(1)
+    finally:
+        termios.tcsetattr(fd, termios.TCSADRAIN, old_settings)
+    return ch
+
+
+def x_movement(ch):
+    if ch == 'a':
+        return -1
+    elif ch == 'd':
+        return 1
+    else:
+        return 0
+
+def y_movement(ch):
+    if ch == 'w':
+        return -1
+    elif ch == 's':
+        return 1
+    else:
+        return 0
+
+def force_exit(ch):
+    if ch == 'q':
+        exit()
+
+
+
+
 def main():
-    width = int(input("Write the width value: "))
-    height = int(input("Write the height value: "))
-    for step in range(0, 10):
+    #width = int(input("Write the width value: "))
+    #height = int(input("Write the height value: "))
+    x_pos = 15
+    y_pos = 15
+    while True:
+        character = getch()
+        force_exit(character)
         os.system('clear')
-        board = create_board(height, width)
-        board_with_player = insert_player(board, 5 + step, 15)
+        board = create_board(100,30)
+        board_with_player = insert_player(board, x_pos + x_movement(character), y_pos + y_movement(character) )
         print_board(board_with_player)
-        sleep(0.1)
-
-
+        x_pos = x_pos + x_movement(character)
+        y_pos = y_pos + y_movement(character)
 main()

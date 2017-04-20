@@ -34,11 +34,11 @@ def insert_player(board, width, height):
 
 
 def main():
-    x = int(input("Write the width value: "))
-    y = int(input("Write the height value: "))
+    width = int(input("Write the width value: "))
+    height = int(input("Write the height value: "))
     for step in range(0, 10):
         os.system('clear')
-        board = create_board(60, 20)
+        board = create_board(height, width)
         board_with_player = insert_player(board, 5 + step, 15)
         print_board(board_with_player)
         sleep(0.1)

@@ -74,9 +74,18 @@ def force_exit(ch):  # tymczasowy exit do fazy testów
         exit()
 
 
+def health(hp):
+   health = []
+   for i in range(0, hp):
+       health.append("♥")
+   return health
+
+
 def main():
     x_position = 15
     y_position = 15
+    life = 5
+    inventory = []
     while True:
         character = getch()
         force_exit(character)
@@ -89,6 +98,7 @@ def main():
             print_board(board_with_player)
         else:
             print_board(board_with_player)
+        print("Life:", str(''.join(health(life)))), "Inventory:", str(' '.join(inventory[0:]))
 
 
 main()

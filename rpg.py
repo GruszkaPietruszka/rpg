@@ -3,9 +3,6 @@ from time import sleep
 import os
 
 
-def cls():
-    os.system('cls' if os.name=='nt' else 'clear')
-
 def create_board(width, height):
     board = []
 
@@ -20,7 +17,6 @@ def create_board(width, height):
                 else:
                     board_row.append(" ")
         board.append(board_row)
-
 
     return board
 
@@ -38,7 +34,9 @@ def insert_player(board, width, height):
 
 
 def getch():
-    import sys, tty, termios
+    import sys
+    import tty
+    import termios
     fd = sys.stdin.fileno()
     old_settings = termios.tcgetattr(fd)
     try:
@@ -57,6 +55,7 @@ def x_movement(ch):
     else:
         return 0
 
+
 def y_movement(ch):
     if ch == 'w':
         return -1
@@ -65,23 +64,20 @@ def y_movement(ch):
     else:
         return 0
 
+
 def force_exit(ch):
     if ch == 'q':
         exit()
 
 
-
-
 def main():
-    #width = int(input("Write the width value: "))
-    #height = int(input("Write the height value: "))
     x_pos = 15
     y_pos = 15
     while True:
         character = getch()
         force_exit(character)
         os.system('clear')
-        board = create_board(100,30)# Średnio bo średnio ale jako tako działa
+        board = create_board(100, 30)  # Średnio bo średnio ale działa
         board_with_player = insert_player(board, x_pos + x_movement(character), y_pos + y_movement(character) )
         if board[x_pos + x_movement(character)][y_pos + y_movement(character)] != 'X':
             x_pos = x_pos + x_movement(character)
@@ -89,5 +85,6 @@ def main():
             print_board(board_with_player)
         else:
             print_board(board_with_player)
+
 
 main()

@@ -18,8 +18,8 @@ def getch():
 
 
 def print_inventory(item_to_add):
-    ''' '''
     pass
+
 
 def create_board(width, height):
     board = []
@@ -69,31 +69,26 @@ def y_movement(ch):
         return 0
 
 
-def force_exit(ch):
+def force_exit(ch):  # tymczasowy exit do fazy testów
     if ch == 'q':
         exit()
 
 
 def main():
-    x_pos = 15
-    y_pos = 15
-    zycie = 5
-    inventory = ["zbroja mocna w chuj +200 def", "klucz do drzwi erkado", "krzeslo do ubicia matki jak w tibi + 500 do ataku matek"]
+    x_position = 15
+    y_position = 15
     while True:
         character = getch()
-        #if character == spacja:
-        #    attack()
-
         force_exit(character)
         os.system('clear')
-        board = create_board(40, 40)  # Średnio bo średnio ale działa
-        if board[x_pos + x_movement(character)][y_pos + y_movement(character)] != 'X':
-            board_with_player = insert_player(board, x_pos + x_movement(character), y_pos + y_movement(character) )
-            x_pos = x_pos + x_movement(character)
-            y_pos = y_pos + y_movement(character)
+        board = create_board(120, 40)
+        if not board[y_position + y_movement(character)][x_position + x_movement(character)] == 'X':
+            board_with_player = insert_player(board, x_position + x_movement(character), y_position + y_movement(character))
+            x_position = x_position + x_movement(character)
+            y_position = y_position + y_movement(character)
             print_board(board_with_player)
         else:
             print_board(board_with_player)
-        print("Zycie:", zycie, "inventory:", str(' '.join(inventory[0:])))
-        zycie -= 1
+
+
 main()

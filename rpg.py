@@ -33,7 +33,7 @@ def create_board(width, height):
                 if column == 0 or column == width - 1:
                     board_row.append("X")
                 else:
-                    board_row.append(" ")
+                    board_row.append(".")
         board.append(board_row)
 
     return board

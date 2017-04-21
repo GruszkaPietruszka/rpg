@@ -33,7 +33,7 @@ def create_board(width, height):
                 if column == 0 or column == width - 1:
                     board_row.append("X")
                 else:
-                    board_row.append(" ")
+                    board_row.append(".")
         board.append(board_row)
 
     return board
@@ -86,8 +86,8 @@ def main():
 
         force_exit(character)
         os.system('clear')
-        board = create_board(40, 40)  # Średnio bo średnio ale działa
-        if board[x_pos + x_movement(character)][y_pos + y_movement(character)] != 'X':
+        board = create_board(100, 50)  # Średnio bo średnio ale działa
+        if board[y_pos + y_movement(character)][x_pos + x_movement(character)] != 'X':
             board_with_player = insert_player(board, x_pos + x_movement(character), y_pos + y_movement(character) )
             x_pos = x_pos + x_movement(character)
             y_pos = y_pos + y_movement(character)

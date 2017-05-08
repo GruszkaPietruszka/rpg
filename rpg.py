@@ -75,10 +75,10 @@ def force_exit(ch):  # tymczasowy exit do fazy testów
 
 
 def health(hp):
-   health = []
-   for i in range(0, hp):
-       health.append("♥")
-   return health
+    health = []
+    for i in range(0, hp):
+        health.append("♥")
+    return health
 
 
 def main():
@@ -90,7 +90,7 @@ def main():
         character = getch()
         force_exit(character)
         os.system('clear')
-        board = create_board(120, 40)
+        board = create_board(80, 30)
         if not board[y_position + y_movement(character)][x_position + x_movement(character)] == 'X':
             board_with_player = insert_player(board, x_position + x_movement(character), y_position + y_movement(character))
             x_position = x_position + x_movement(character)

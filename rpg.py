@@ -46,7 +46,7 @@ def display_inventory(inventory, ch, order=None):
         print("Total number of items: {}".format(total_items))
 
 
-def create_board(width, height,door_pos=19):
+def create_board(width, height,level,door_pos=19):
     board = []
     line = 0
     #  For door position:
@@ -86,14 +86,15 @@ def create_board(width, height,door_pos=19):
         board[x_generator+1][y_generator-1] = 'X'
         board[x_generator-1][y_generator+1] = 'X'
 
-    with open('maps.txt', 'w') as out:
+
+    with open('map{}.txt'.format(level), 'w') as out:
         out.write('\n'.join(str(''.join(row)) for row in board))
     return board
 
 
-def import_map(filename):
+def import_map(filename, level):
     map_one = []
-    with open('maps.txt', 'r', newline='') as board:
+    with open('map{}.txt'.format(level), 'r', newline='') as board:
         for row in board:
             map_one.append(list(row.rstrip('\n')))
     return map_one
@@ -157,7 +158,8 @@ def health(hp):
 
 
 def main():
-    board = create_board(80,30)
+    level = 1
+    board = create_board(80,30,level)
     x_player = 1
     y_player = 1
     life = 5
@@ -167,19 +169,29 @@ def main():
         force_exit(character)
         display_inventory(inventory, character)
         os.system('clear')
-        board = import_map('maps.txt')
+        board = import_map('map{}.txt'.format(level), level)
         #board_with_player = insert_mob(board, 5, 5)
         if not board[y_player + y_movement(character)][x_player + x_movement(character)] == 'X':
             x_player = x_player + x_movement(character)
             y_player = y_player + y_movement(character)
-        if not board[y_player + y_movement(character)][x_player + x_movement(character)] == '→':
-            pass
+        if board[y_player][x_player] == '→':
+            x_player = 1
+            y_player = 1
+            level += 1
+            board = create_board(80,30,level)
+        if board[y_player + y_movement(character)][x_player + x_movement(character)] == '←':
+            x_player = 1
+            y_player = 1
+            level -= 1
+            board = create_board(80,30,level)
+
+
 
         board_with_player = insert_player(board, x_player, y_player)
         print_board(board_with_player)
 
-        print("Name: {0}, Class: {1}, Level:{2}, Life:{3}, Mana:{4}, EXP:{5}, Str:{6}, Dex:{7}, Ene:{8}".format(
-        player_name, player_class, player_level, str(''.join(health(life))), mana, experience, strength, dexterity, energy))
+        print("Name: {0}, Class: {1}, Stage:{2}, Life:{3}, Mana:{4}, EXP:{5}, Str:{6}, Dex:{7}, Ene:{8}".format(
+        player_name, player_class, level, str(''.join(health(life))), mana, experience, strength, dexterity, energy))
 
 
 main()

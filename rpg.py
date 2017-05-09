@@ -1,6 +1,8 @@
+from intro import player_name, player_class, player_level, mana, capacity, strength, dexterity, energy, experience
 import random
 from time import sleep
 import os
+import csv
 
 
 def getch():
@@ -17,47 +19,84 @@ def getch():
     return ch
 
 
-def print_inventory(item_to_add):
-    pass
+def display_inventory(inventory, ch, order=None):
+    if ch == 'i':
+        longest_string_count = 0
+        for item in inventory:
+            if len(item) > longest_string_count:
+                longest_string_count = len(item)
+        total_items = 0
+        for item in inventory:
+            total_items += inventory[item]
+        print('Inventory:')
+        print('{:>7}{:{align}{width}}'.format('count', 'item name', align='>', width=longest_string_count + 4))
+        print('-' * (6 + len('count') + longest_string_count))
+        if order == 'count,asc':
+            sorted_inventory = [(key, inventory[key]) for key in sorted(inventory, key=inventory.get)]
+            for key, value in sorted_inventory:
+                print('{:>7}{:{align}{width}}'.format(value, key, align='>', width=longest_string_count + 4))
+        elif order == 'count,desc':
+            sorted_inventory = [(key, inventory[key]) for key in sorted(inventory, key=inventory.get, reverse=True)]
+            for key, value in sorted_inventory:
+                print('{:>7}{:{align}{width}}'.format(value, key, align='>', width=longest_string_count + 4))
+        else:
+            for item in inventory:
+                print('{:>7}{:{align}{width}}'.format(inventory[item], item, align='>', width=longest_string_count + 4))
+        print('-' * (6 + len('count') + longest_string_count))
+        print("Total number of items: {}".format(total_items))
 
 
-def create_board(width, height):
+def create_board(width, height,door_pos=19):
     board = []
     line = 0
+    #  For door position:
+    #  odd for arrow on right side,
+    middle_door = 0  # even for arrow on left side
     for row in range(0, height):
         board_row = []
         for column in range(0, width):
             if row == 0 or row == height-1:
                 board_row.append("X")
-            else:
+            else:  # if column == 0 or column == width - 1:
                 if column == 0 or column == width - 1:
-                    board_row.append("X")
+                    if door_pos != middle_door:
+                        board_row.append("X")
+                        middle_door += 1
+                    else:
+                        if door_pos % 2 == 0:
+                            board_row.append("⭁")
+                            middle_door += 1
+                        else:
+                            board_row.append("⭌")
+                            middle_door += 1
                 else:
                     board_row.append(".")
         board.append(board_row)
 
-    with open('map.txt', 'r') as maps:
-        for row in maps:
-            line += 1
-            if line % 2 == 0:
-                x_generator = row
-            else:
-                y_generator = row
+    for i in range(15):
+        x_generator = random.randrange(5,25)
+        y_generator = random.randrange(5,75)
+        board[x_generator][y_generator] = 'X'
+        board[x_generator-1][y_generator] = 'X'
+        board[x_generator+1][y_generator] = 'X'
+        board[x_generator][y_generator+1] = 'X'
+        board[x_generator][y_generator-1] = 'X'
+        board[x_generator-1][y_generator-1] = 'X'
+        board[x_generator+1][y_generator+1] = 'X'
+        board[x_generator+1][y_generator-1] = 'X'
+        board[x_generator-1][y_generator+1] = 'X'
 
-    x_generator = int(x_generator)
-    y_generator = int(y_generator)
-    board[x_generator][y_generator] = 'X'
-    board[x_generator-1][y_generator] = 'A'
-    board[x_generator+1][y_generator] = 'B'
-    board[x_generator][y_generator+1] = 'C'
-    board[x_generator][y_generator-1] = 'D'
-    board[x_generator-1][y_generator-1] = 'E'
-    board[x_generator+1][y_generator+1] = 'F'
-    board[x_generator+1][y_generator-1] = 'G'
-    board[x_generator-1][y_generator+1] = 'H'
-
-    #board = create_lands(board,width,height)
+    with open('maps.txt', 'w') as out:
+        out.write('\n'.join(str(''.join(row)) for row in board))
     return board
+
+
+def import_map(filename):
+    map_one = []
+    with open('maps.txt', 'r', newline='') as board:
+        for row in board:
+            map_one.append(list(row.rstrip('\n')))
+    return map_one
 
 
 def print_board(board):
@@ -116,26 +155,26 @@ def health(hp):
 
 
 def main():
-    x_position = 15
-    y_position = 15
+    board = create_board(80,30)
+    x_player = 1
+    y_player = 1
     life = 5
-    inventory = []
-    #board = create_board(80,30)
-    generate_lands(25, 25)
-
+    inventory = {'gold coin': 3, 'torch': 4}
     while True:
         character = getch()
         force_exit(character)
+        display_inventory(inventory, character)
         os.system('clear')
-        board = create_board(80, 30)
-        board_with_player = insert_mob(board, 5, 5)
-        if not board[y_position + y_movement(character)][x_position + x_movement(character)] == 'X':
-            x_position = x_position + x_movement(character)
-            y_position = y_position + y_movement(character)
-        board_with_player = insert_player(board, x_position, y_position)
+        board = import_map('maps.txt')
+        #board_with_player = insert_mob(board, 5, 5)
+        if not board[y_player + y_movement(character)][x_player + x_movement(character)] == 'X':
+            x_player = x_player + x_movement(character)
+            y_player = y_player + y_movement(character)
+        board_with_player = insert_player(board, x_player, y_player)
         print_board(board_with_player)
 
-        print("Life:", str(''.join(health(life)))), "Inventory:", str(' '.join(inventory[0:]))
+        print("Name: {0}, Class: {1}, Level:{2}, Life:{3}, Mana:{4}, EXP:{5}, Str:{6}, Dex:{7}, Ene:{8}".format(
+        player_name, player_class, player_level, str(''.join(health(life))), mana, experience, strength, dexterity, energy))
 
 
 main()

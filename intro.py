@@ -44,7 +44,9 @@ X    Hey, you! What's your name?    X
 X                                   X
 XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX
         ''')
-        player_class = input('''
+        player_class = ''
+        while player_class not in ['1', '2', '3']:
+            player_class = input('''
 XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX
 X                                   X
 X  Ok, cool. You will have to fight X
@@ -57,6 +59,29 @@ X  3 - Mage                         X
 X                                   X
 XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX
         ''')
+        if player_class == '1':
+            player_class = 'Warrior'
+            capacity = 100
+            strength = 10
+            dexterity = 5
+            energy = 5
+            mana = 25
+        elif player_class == '2':
+            player_class = 'Archer'
+            capacity = 70
+            strength = 5
+            dexterity = 10
+            energy = 5
+            mana = 25
+        elif player_class == '3':
+            player_class = 'Mage'
+            capacity = 50
+            strength = 5
+            dexterity = 5
+            energy = 15
+            mana = 50
+        experience = 0
+        player_level = 1
         print('''
 XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX
 X                                   X
@@ -68,9 +93,11 @@ X  W, S, A, D - movement            X
 X  I - inventory                    X
 X  ...                              X
 X                                   X
+X          PRESS W to PLAY!         X
+X                                   X
 XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX
         ''')
-
+        break
     elif start == '2':
         pass
     elif start == '3':

@@ -174,7 +174,7 @@ def main():
             y_player = y_player + y_movement(character)
         if not board[y_player + y_movement(character)][x_player + x_movement(character)] == '→':
             pass
-            
+
         board_with_player = insert_player(board, x_player, y_player)
         print_board(board_with_player)
 

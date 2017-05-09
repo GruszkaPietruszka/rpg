@@ -64,10 +64,10 @@ def create_board(width, height,door_pos=19):
                         middle_door += 1
                     else:
                         if door_pos % 2 == 0:
-                            board_row.append("⭁")
+                            board_row.append("→")
                             middle_door += 1
                         else:
-                            board_row.append("⭌")
+                            board_row.append("←")
                             middle_door += 1
                 else:
                     board_row.append(".")

@@ -171,11 +171,13 @@ def health(hp):
 
 def main():
     level = 0
-    board = create_board(80,30,level)
+#    board = create_board(80,30,level)
     x_player = 1
     y_player = 1
     life = 5
     inventory = {'gold coin': 3, 'torch': 4}
+    for i in range(5):
+        create_board(80, 30,i,)
     while True:
         character = getch()
         force_exit(character)
@@ -189,7 +191,7 @@ def main():
             x_player = 1
             y_player = 1
             level += 1
-            board = create_board(80,30,level)
+            board = import_map('map{}.txt'.format(level),level)
         if board[y_player][x_player] == '←':
             x_player = 1
             y_player = 1

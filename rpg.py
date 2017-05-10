@@ -92,15 +92,13 @@ def create_board(width, height,level,door_pos_right=19,door_pos_left=5):
         board[x_generator+1][y_generator-1] = char
         board[x_generator-1][y_generator+1] = char
 
-    for i in range(15):
-        x_generator = random.randrange(2, 28)
-        y_generator = random.randrange(2, 78)
-        insert_element(board, y_generator, x_generator, '🕷')
-
-    for i in range(1):
-        x_generator = random.randrange(2, 28)
-        y_generator = random.randrange(2, 78)
-        insert_element(board, y_generator, x_generator, '🔪')
+    mob_list = ['🦁','🐷','🦂','😆','😈','☪','✡','🎠','🌝','♞','😻']
+    for i in range(8):
+        x_generator = random.randrange(2,28)
+        y_generator = random.randrange(2,78)
+        random_mob = random.randrange(len(mob_list))
+        insert_element(board, y_generator, x_generator, mob_list[random_mob])
+        mob_list.pop(random_mob)
 
     with open('map{}.txt'.format(level), 'w') as out:
         out.write('\n'.join(str(''.join(row)) for row in board))

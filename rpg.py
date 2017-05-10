@@ -46,7 +46,7 @@ def display_inventory(inventory, ch, order=None):
         print("Total number of items: {}".format(total_items))
 
 
-def create_board(width, height,level,door_pos=19):
+def create_board(width, height,level,door_pos_right=19,door_pos_left=5):
     board = []
     line = 0
     #  For door position:
@@ -59,14 +59,25 @@ def create_board(width, height,level,door_pos=19):
                 board_row.append("X")
             else:  # if column == 0 or column == width - 1:
                 if column == 0 or column == width - 1:
-                    if door_pos != middle_door:
+                    middle_door += 1
+                    #if door_pos_left == middle_door or door_pos_right == middle_door:
+                #        if door_pos_right == middle_door:
+            #                board_row.append("→")
+        #                    middle_door += 1
+    #                    elif level > 1 and door_pos_left == middle_door:
+    #                        board_row.append("←")
+    #                        middle_door += 1
+    #                    elif not door_pos_left == middle_door and not door_pos_left == middle_door:
+    #                        board_row.append("X")
+    #                        middle_door += 1 '''
+                    if not door_pos_right == middle_door and not door_pos_left == middle_door:
                         board_row.append("X")
                         middle_door += 1
                     else:
-                        if door_pos % 2 == 0:
+                        if door_pos_left == middle_door:
                             board_row.append("←")
                             middle_door += 1
-                        else:
+                        if door_pos_right == middle_door:
                             board_row.append("→")
                             middle_door += 1
                 else:
@@ -74,17 +85,18 @@ def create_board(width, height,level,door_pos=19):
         board.append(board_row)
 
     for i in range(15):
+        char = '🌵'
         x_generator = random.randrange(5,25)
         y_generator = random.randrange(5,75)
-        board[x_generator][y_generator] = 'X'
-        board[x_generator-1][y_generator] = 'X'
-        board[x_generator+1][y_generator] = 'X'
-        board[x_generator][y_generator+1] = 'X'
-        board[x_generator][y_generator-1] = 'X'
-        board[x_generator-1][y_generator-1] = 'X'
-        board[x_generator+1][y_generator+1] = 'X'
-        board[x_generator+1][y_generator-1] = 'X'
-        board[x_generator-1][y_generator+1] = 'X'
+        board[x_generator][y_generator] = char
+        board[x_generator-1][y_generator] = char
+        board[x_generator+1][y_generator] = char
+        board[x_generator][y_generator+1] = char
+        board[x_generator][y_generator-1] = char
+        board[x_generator-1][y_generator-1] = char
+        board[x_generator+1][y_generator+1] = char
+        board[x_generator+1][y_generator-1] = char
+        board[x_generator-1][y_generator+1] = char
 
 
     with open('map{}.txt'.format(level), 'w') as out:
@@ -158,7 +170,7 @@ def health(hp):
 
 
 def main():
-    level = 1
+    level = 0
     board = create_board(80,30,level)
     x_player = 1
     y_player = 1
@@ -178,11 +190,11 @@ def main():
             y_player = 1
             level += 1
             board = create_board(80,30,level)
-        if board[y_player + y_movement(character)][x_player + x_movement(character)] == '←':
+        if board[y_player][x_player] == '←':
             x_player = 1
             y_player = 1
             level -= 1
-            board = create_board(80,30,level)
+            board = import_map('map{}.txt'.format(level), level)
 
 
 

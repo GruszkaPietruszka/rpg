@@ -4,6 +4,7 @@ from time import sleep
 import os
 import csv
 
+levels_to_create = 3
 
 def getch():
     import sys
@@ -74,12 +75,17 @@ def create_board(width, height,level,door_pos_right=19,door_pos_left=5):
                         board_row.append("X")
                         middle_door += 1
                     else:
-                        if door_pos_left == middle_door:
+                        if level == 0 and door_pos_left == middle_door:
+                            board_row.append("X")
+                            middle_door += 1
+                        elif door_pos_left == middle_door:
                             board_row.append("←")
                             middle_door += 1
-                        if door_pos_right == middle_door:
+                        if door_pos_right == middle_door and not levels_to_create-1 == level:
                             board_row.append("→")
                             middle_door += 1
+                        elif levels_to_create-1 == level and door_pos_right == middle_door:
+                            board_row.append("X")
                 else:
                     board_row.append(".")
         board.append(board_row)
@@ -97,6 +103,16 @@ def create_board(width, height,level,door_pos_right=19,door_pos_left=5):
         board[x_generator+1][y_generator+1] = char
         board[x_generator+1][y_generator-1] = char
         board[x_generator-1][y_generator+1] = char
+
+    for i in range(15):
+        x_generator = random.randrange(2,28)
+        y_generator = random.randrange(2,78)
+        insert_element(board, y_generator, x_generator, '🕷')
+
+    for i in range(1):
+        x_generator = random.randrange(2,28)
+        y_generator = random.randrange(2,78)
+        insert_element(board, y_generator, x_generator, '🔪')
 
 
     with open('map{}.txt'.format(level), 'w') as out:
@@ -124,8 +140,8 @@ def insert_player(board, width, height):
     return board
 
 
-def insert_mob(board, width, height):
-    board[height][width] = 'X'
+def insert_element(board, width, height, symbol):
+    board[height][width] = symbol
     return board
 
 
@@ -176,25 +192,24 @@ def main():
     y_player = 1
     life = 5
     inventory = {'gold coin': 3, 'torch': 4}
-    for i in range(5):
+    for i in range(levels_to_create):
         create_board(80, 30,i,)
     while True:
         character = getch()
         force_exit(character)
         os.system('clear')
         board = import_map('map{}.txt'.format(level), level)
-        #board_with_player = insert_mob(board, 5, 5)
         if not board[y_player + y_movement(character)][x_player + x_movement(character)] == 'X':
             x_player = x_player + x_movement(character)
             y_player = y_player + y_movement(character)
         if board[y_player][x_player] == '→':
             x_player = 1
-            y_player = 1
+            y_player = 2
             level += 1
             board = import_map('map{}.txt'.format(level),level)
         if board[y_player][x_player] == '←':
-            x_player = 1
-            y_player = 1
+            x_player = 78
+            y_player = 5
             level -= 1
             board = import_map('map{}.txt'.format(level), level)
 

@@ -53,28 +53,28 @@ X  Ok, cool. You will have to fight X
 X  here a lot... What style do you  X
 X  prefer?                          X
 X                                   X
-X  1 - Warrior                      X
-X  2 - Archer                       X
-X  3 - Mage                         X
+X  1 - Melee                        X
+X  2 - Ranged                       X
+X  3 - Magic                        X
 X                                   X
 XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX
         ''')
         if player_class == '1':
-            player_class = 'Warrior'
+            player_class = 'Melee'
             capacity = 100
             strength = 10
             dexterity = 5
             energy = 5
             mana = 25
         elif player_class == '2':
-            player_class = 'Archer'
+            player_class = 'Ranged'
             capacity = 70
             strength = 5
             dexterity = 10
             energy = 5
             mana = 25
         elif player_class == '3':
-            player_class = 'Mage'
+            player_class = 'Magic'
             capacity = 50
             strength = 5
             dexterity = 5

@@ -167,7 +167,6 @@ def main():
     while True:
         character = getch()
         force_exit(character)
-        display_inventory(inventory, character)
         os.system('clear')
         board = import_map('map{}.txt'.format(level), level)
         #board_with_player = insert_mob(board, 5, 5)
@@ -189,7 +188,7 @@ def main():
 
         board_with_player = insert_player(board, x_player, y_player)
         print_board(board_with_player)
-
+        display_inventory(inventory, character)
         print("Name: {0}, Class: {1}, Stage:{2}, Life:{3}, Mana:{4}, EXP:{5}, Str:{6}, Dex:{7}, Ene:{8}".format(
         player_name, player_class, level, str(''.join(health(life))), mana, experience, strength, dexterity, energy))
 

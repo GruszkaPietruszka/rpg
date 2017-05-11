@@ -12,7 +12,7 @@ def getch():
     old_settings = termios.tcgetattr(fd)
     try:
         tty.setraw(sys.stdin.fileno())
-        ch=sys.stdin.read(1)
+        ch = sys.stdin.read(1)
     finally:
         termios.tcsetattr(fd, termios.TCSADRAIN, old_settings)
     return ch
@@ -234,9 +234,12 @@ def main():
     board = create_board(80, 30, level)
     x_player = 1
     y_player = 1
+    y_mob = random.randrange(2,28)
+    x_mob = random.randrange(2,78)
     inventory = {'gold coin': 10, 'torch': 4}
     for i in range(levels_to_create):
         create_board(80, 30, i)
+
 
     while True:
         character = getch()
@@ -259,9 +262,24 @@ def main():
             x_player = 78
             y_player = 5
             level -= 1
-            board = import_map('map{}.txt'.format(level), level)
+        if x_player < x_mob:
+            x_mob -= 1
+            if y_mob > y_player:
+                y_mob -= 1
+        else:
+            x_mob += 1
+            if y_mob < y_player:
+                y_mob += 1
+
+        if y_mob > y_player:
+            y_mob -= 1
+
+        if y_mob > y_player and x_mob > x_player:
+            y_mob -= 1
+            x_mob -= 1
 
         board_with_player = insert_player(board, x_player, y_player)
+        board_with_player = insert_element(board, x_mob, y_mob, '😆')
         print_board(board_with_player)
         os.system('clear')
         print_board(attack(board, character, level, stats, x_player, y_player))

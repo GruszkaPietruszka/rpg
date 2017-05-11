@@ -3,8 +3,9 @@ import random
 from time import sleep
 import os
 import csv
+from hotwarm import hot_warm
 
-levels_to_create = 3
+levels_to_create = 2
 
 def getch():
     import sys, tty, termios
@@ -72,6 +73,16 @@ def create_board(width, height, level, door_pos_right=19, door_pos_left=5):
         random_mob = random.randrange(len(mob_list))
         insert_element(board, y_generator, x_generator, mob_list[random_mob])
         mob_list.pop(random_mob)
+
+    item_list = ['🎽','$','💖','🔪','🔫']
+    for i in range(2):
+        rand_pos_x = random.randrange(30,79)
+        rand_pos_y = random.randrange(10,28)
+        random_index = random.randrange(len(item_list))
+        insert_element(board,rand_pos_x,rand_pos_y,item_list[random_index])
+        item_list.pop(random_index)
+
+
 
     with open('map{}.txt'.format(level), 'w') as out:
         out.write('\n'.join(str(''.join(row)) for row in board))
@@ -250,6 +261,44 @@ def mob_movement(board,x_player,y_player,x_mob,y_mob,level):
     import_map('map{}.txt'.format(level),level)
     return board
 
+def print_boss():
+    os.system("clear")
+    for i in range(1):
+        print('''█▀▀▄░░░░░░░░░░░▄▀▀█
+    ░█░░░▀▄░▄▄▄▄▄░▄▀░░░█
+    ░░▀▄░░░▀░░░░░▀░░░▄▀
+    ░░░░▌░▄▄░░░▄▄░▐▀▀
+    ░░░▐░░█▄░░░▄█░░▌▄▄▀▀▀▀█
+    ░░░▌▄▄▀▀░▄░▀▀▄▄▐░░░░░░█
+    ▄▀▀▐▀▀░▄▄▄▄▄░▀▀▌▄▄▄░░░█
+    █░░░▀▄░█░░░█░▄▀░░░░█▀▀▀
+    ░▀▄░░▀░░▀▀▀░░▀░░░▄█▀
+    ░░░█░░░░░░░░░░░▄▀▄░▀▄
+    ░░░█░░░░░░░░░▄▀█░░█░░█
+    ░░░█░░░░░░░░░░░█▄█░░▄▀
+    ░░░█░░░░░░░░░░░████▀
+    ░░░▀▄▄▀▀▄▄▀▀▄▄▄█▀''')
+        sleep(0.4)
+        os.system("clear")
+        print('''█▀▀▄░░░░░░░░░░░▄▀▀█
+    ░█░░░▀▄░▄▄▄▄▄░▄▀░░░█
+    ░░▀▄░░░▀░░░░░▀░░░▄▀
+    ░░░░▌░▄▄░░░▄▄░▐▀▀
+    ░░░▐░░█▄░░░▄█░░▌▄▄▀▀▀▀█
+    ░░░▌▄▄▀▀░▄░▀▀▄▄▐░░░░░░█
+    ▄▀▀▐▀▀░▄▄▄▄▄░▀▀▌▄▄▄░░░█
+    █░░░▀▄░█▀▀▀█░▄▀░░░░█▀▀▀
+    ░▀▄░░▀░░░░░░░▀░░░▄█▀
+    ░░░█░░░░░░░░░░░▄▀▄░▀▄
+    ░░░█░░░░░░░░░▄▀█░░█░░█
+    ░░░█░░░░░░░░░░░█▄█░░▄▀
+    ░░░█░░░░░░░░░░░████▀
+    ░░░▀▄▄▀▀▄▄▀▀▄▄▄█▀''')
+        sleep(0.4)
+        os.system("clear")
+    hot_warm()
+
+
 def main():
     level = 0
     board = create_board(80, 30, level)
@@ -285,6 +334,7 @@ def main():
             level -= 1
 
 
+
         board_with_player = insert_player(board, x_player, y_player)
         board_with_player = mob_movement(board,x_player,y_player,x_mob,y_mob,level)
         print_board(board_with_player)
@@ -294,5 +344,9 @@ def main():
         print("Name: {0}, Class: {1}, Stage:{2}, Life:{3}, EXP:{4}, Str:{5}, Dex:{6}".format(
         player_name, player_class, stats['player_level'], stats['life'], stats['experience'], stats['strength'], stats['dexterity']))
 
+        if level == levels_to_create - 1:
+            print_boss()
+
+            break
 
 main()

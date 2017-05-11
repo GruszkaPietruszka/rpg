@@ -228,6 +228,27 @@ def health(hp):
         health.append("♥")
     return health
 
+def mob_movement(board,x_player,y_player,x_mob,y_mob,level):
+    insert_player(board,x_player,y_player)
+    if x_player < x_mob:
+        x_mob -= 1
+        if y_mob > y_player:
+            y_mob -= 1
+    else:
+        x_mob += 1
+        if y_mob < y_player:
+            y_mob += 1
+
+    if y_mob > y_player:
+        y_mob -= 1
+
+    if y_mob > y_player and x_mob > x_player:
+        y_mob -= 1
+        x_mob -= 1
+
+    board = insert_element(board, x_mob, y_mob, '😆')
+    import_map('map{}.txt'.format(level),level)
+    return board
 
 def main():
     level = 0
@@ -262,30 +283,13 @@ def main():
             x_player = 78
             y_player = 5
             level -= 1
-        if x_player < x_mob:
-            x_mob -= 1
-            if y_mob > y_player:
-                y_mob -= 1
-        else:
-            x_mob += 1
-            if y_mob < y_player:
-                y_mob += 1
 
-        if y_mob > y_player:
-            y_mob -= 1
-
-        if y_mob > y_player and x_mob > x_player:
-            y_mob -= 1
-            x_mob -= 1
 
         board_with_player = insert_player(board, x_player, y_player)
-        board_with_player = insert_element(board, x_mob, y_mob, '😆')
+        board_with_player = mob_movement(board,x_player,y_player,x_mob,y_mob,level)
         print_board(board_with_player)
         os.system('clear')
         print_board(attack(board, character, level, stats, x_player, y_player))
-        # jak zrobić, żeby w momencie ataku zapisała się mapa, ale nie robiła tego za każdym razem przy ruchu?
-        # potwory muszą być generowane już po stworzeniu planszy, bo inaczej zawsze będą wczytywały się od nowa
-        # jak Steryd zrobił poruszanie się mobów? Czy na tej samej zasadzie mogą zniknąć z planszy(dodać do pustej listy?)
         display_inventory(inventory, character)
         print("Name: {0}, Class: {1}, Stage:{2}, Life:{3}, EXP:{4}, Str:{5}, Dex:{6}".format(
         player_name, player_class, stats['player_level'], stats['life'], stats['experience'], stats['strength'], stats['dexterity']))

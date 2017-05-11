@@ -1,3 +1,5 @@
+import csv
+
 print('''
 
     ____            __
@@ -62,26 +64,35 @@ XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX
         if player_class == '1':
             player_class = 'Melee'
             capacity = 100
-            strength = 10
-            dexterity = 5
-            energy = 5
-            mana = 25
+            strength = 2
+            dexterity = 3
+            energy = 0
         elif player_class == '2':
             player_class = 'Ranged'
             capacity = 70
-            strength = 5
-            dexterity = 10
-            energy = 5
-            mana = 25
+            strength = 1
+            dexterity = 5
+            energy = 0
         elif player_class == '3':
             player_class = 'Magic'
             capacity = 50
-            strength = 5
-            dexterity = 5
-            energy = 15
-            mana = 50
+            strength = 1
+            dexterity = 3
+            energy = 1
         experience = 0
         player_level = 1
+        lives = 5
+
+        with open('stats.csv', 'w') as stats:
+            writer = csv.writer(stats, delimiter=',')
+            writer.writerow(['player_level', player_level])
+            writer.writerow(['life', lives])
+            writer.writerow(['capacity', capacity])
+            writer.writerow(['strength', strength])
+            writer.writerow(['dexterity', dexterity])
+            writer.writerow(['energy', energy])
+            writer.writerow(['experience', experience])
+
         print('''
 XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX
 X                                   X

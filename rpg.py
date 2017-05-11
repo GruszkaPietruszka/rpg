@@ -104,13 +104,14 @@ def create_board(width, height,level,door_pos_right=19,door_pos_left=5):
         board[x_generator+1][y_generator-1] = char
         board[x_generator-1][y_generator+1] = char
 
-    mob_list = ['🦁','🐷','🦂','😆','😈','☪','✡','🎠','🌝','♞','😻']
-    for i in range(8):
-        x_generator = random.randrange(2,28)
-        y_generator = random.randrange(2,78)
-        random_mob = random.randrange(len(mob_list))
-        insert_element(board, y_generator, x_generator, mob_list[random_mob])
-        mob_list.pop(random_mob)
+
+#    mob_list = ['🦁','🐷','🦂','😆','😈','☪','✡','🎠','🌝','♞','😻']
+    x_mob = random.randrange(2,28)
+    y_mob = random.randrange(2,78)
+#    random_mob = random.randrange(len(mob_list))
+#    insert_element(board, y_mob, x_mob, mob_list[random_mob])
+    insert_element(board, y_mob, x_mob, '😆')
+
 
 
     #for i in range(1):
@@ -196,8 +197,18 @@ def main():
     y_player = 1
     life = 5
     inventory = {'gold coin': 3, 'torch': 4}
-    for i in range(levels_to_create):
-        create_board(80, 30,i,)
+
+
+
+#    for i in range(levels_to_create):
+    board = create_board(80, 30,1)
+    x_mob = random.randrange(2,28)
+    y_mob = random.randrange(2,78)
+
+    #mob_list.pop(random_mob)
+
+
+
     while True:
         character = getch()
         force_exit(character)
@@ -215,15 +226,34 @@ def main():
             x_player = 78
             y_player = 5
             level -= 1
-            board = import_map('map{}.txt'.format(level), level)
+        #    board = import_map('map{}.txt'.format(level), level)
+        if x_mob > y_player:
+           y_mob -= 1
+        if y_player > x_mob:
+            x_mob -= 1
+        if x_mob == y_player:
+            x_mob += 1
+        if y_mob == x_player:
+            y_mob -= 1
+
+
+            #y_mob -= 1
+        #elif y_player > y_mob:
+        #    y_mob -= 1
+    #    elif x_mob > x_player:
+    #        x_mob -= 1
+    #    elif x_player > x_mob:
+    #        x_mob -= 1
+
 
 
 
         board_with_player = insert_player(board, x_player, y_player)
+        board_with_player = insert_element(board, y_mob, x_mob, '😆')
         print_board(board_with_player)
         display_inventory(inventory, character)
-        print("Name: {0}, Class: {1}, Stage:{2}, Life:{3}, Mana:{4}, EXP:{5}, Str:{6}, Dex:{7}, Ene:{8}".format(
-        player_name, player_class, level, str(''.join(health(life))), mana, experience, strength, dexterity, energy))
+        print("Name: {0}, Class: {1}, Stage:{2}, Life:{3}, Mana:{4}, EXP:{5}, Str:{6}, Dex:{7}, Ene:{8}, X:{9}, Y:{10}, X_mob:{11}, Y_mob:{12}".format(
+        player_name, player_class, level, str(''.join(health(life))), mana, experience, strength, dexterity, energy, x_player, y_player, x_mob, y_mob))
 
 
 main()

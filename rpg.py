@@ -283,9 +283,6 @@ def main():
         print_board(board_with_player)
         os.system('clear')
         print_board(attack(board, character, level, stats, x_player, y_player))
-        # jak zrobić, żeby w momencie ataku zapisała się mapa, ale nie robiła tego za każdym razem przy ruchu?
-        # potwory muszą być generowane już po stworzeniu planszy, bo inaczej zawsze będą wczytywały się od nowa
-        # jak Steryd zrobił poruszanie się mobów? Czy na tej samej zasadzie mogą zniknąć z planszy(dodać do pustej listy?)
         display_inventory(inventory, character)
         print("Name: {0}, Class: {1}, Stage:{2}, Life:{3}, EXP:{4}, Str:{5}, Dex:{6}".format(
         player_name, player_class, stats['player_level'], stats['life'], stats['experience'], stats['strength'], stats['dexterity']))

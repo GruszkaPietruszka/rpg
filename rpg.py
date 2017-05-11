@@ -7,14 +7,12 @@ import csv
 levels_to_create = 3
 
 def getch():
-    import sys
-    import tty
-    import termios
+    import sys, tty, termios
     fd = sys.stdin.fileno()
     old_settings = termios.tcgetattr(fd)
     try:
         tty.setraw(sys.stdin.fileno())
-        ch = sys.stdin.read(1)
+        ch=sys.stdin.read(1)
     finally:
         termios.tcsetattr(fd, termios.TCSADRAIN, old_settings)
     return ch
@@ -61,16 +59,6 @@ def create_board(width, height,level,door_pos_right=19,door_pos_left=5):
             else:  # if column == 0 or column == width - 1:
                 if column == 0 or column == width - 1:
                     middle_door += 1
-                    #if door_pos_left == middle_door or door_pos_right == middle_door:
-                #        if door_pos_right == middle_door:
-            #                board_row.append("→")
-        #                    middle_door += 1
-    #                    elif level > 1 and door_pos_left == middle_door:
-    #                        board_row.append("←")
-    #                        middle_door += 1
-    #                    elif not door_pos_left == middle_door and not door_pos_left == middle_door:
-    #                        board_row.append("X")
-    #                        middle_door += 1 '''
                     if not door_pos_right == middle_door and not door_pos_left == middle_door:
                         board_row.append("X")
                         middle_door += 1
@@ -81,7 +69,7 @@ def create_board(width, height,level,door_pos_right=19,door_pos_left=5):
                         elif door_pos_left == middle_door:
                             board_row.append("←")
                             middle_door += 1
-                        if door_pos_right == middle_door and not levels_to_create-1 == level:
+                        if door_pos_right == middle_door and not levels_to_create - 1 == level:
                             board_row.append("→")
                             middle_door += 1
                         elif levels_to_create-1 == level and door_pos_right == middle_door:
@@ -92,8 +80,8 @@ def create_board(width, height,level,door_pos_right=19,door_pos_left=5):
 
     for i in range(15):
         char = '🌵'
-        x_generator = random.randrange(5,25)
-        y_generator = random.randrange(5,75)
+        x_generator = random.randrange(5, 25)
+        y_generator = random.randrange(5, 75)
         board[x_generator][y_generator] = char
         board[x_generator-1][y_generator] = char
         board[x_generator+1][y_generator] = char
@@ -111,13 +99,6 @@ def create_board(width, height,level,door_pos_right=19,door_pos_left=5):
 #    random_mob = random.randrange(len(mob_list))
 #    insert_element(board, y_mob, x_mob, mob_list[random_mob])
     insert_element(board, y_mob, x_mob, '😆')
-
-
-
-    #for i in range(1):
-    #    x_generator = random.randrange(2,28)
-    #    y_generator = random.randrange(2,78)
-    #    insert_element(board, y_generator, x_generator, '🔪')
 
 
     with open('map{}.txt'.format(level), 'w') as out:
@@ -150,14 +131,6 @@ def insert_element(board, width, height, symbol):
     return board
 
 
-def generate_lands(width, height, count=5):
-    y_generator = random.randrange(0, width)
-    x_generator = random.randrange(0, height)
-
-    with open('map.txt', 'a') as out:
-        out.write(str(x_generator)+'\n'+str(y_generator)+'\n')
-
-
 def x_movement(ch):
     if ch == 'a':
         return -1
@@ -181,6 +154,68 @@ def force_exit(ch):  # tymczasowy exit do fazy testów
         exit()
 
 
+def display_inventory(inventory, ch, order='count,desc'):
+    if ch == 'i':
+        longest_string_count = 0
+        for item in inventory:
+            if len(item) > longest_string_count:
+                longest_string_count = len(item)
+        total_items = 0
+        for item in inventory:
+            total_items += inventory[item]
+        print('Inventory:'.rjust(80))
+        print('{:>7}{:{align}{width}}'.format('count', 'item name', align='>', width=longest_string_count + 4))
+        print('-' * (6 + len('count') + longest_string_count))
+        if order == 'count,asc':
+            sorted_inventory = [(key, inventory[key]) for key in sorted(inventory, key=inventory.get)]
+            for key, value in sorted_inventory:
+                print('{:>7}{:{align}{width}}'.format(value, key, align='>', width=longest_string_count + 4))
+        elif order == 'count,desc':
+            sorted_inventory = [(key, inventory[key]) for key in sorted(inventory, key=inventory.get, reverse=True)]
+            for key, value in sorted_inventory:
+                print('{:>7}{:{align}{width}}'.format(value, key, align='>', width=longest_string_count + 4))
+        else:
+            for item in inventory:
+                print('{:>7}{:{align}{width}}'.format(inventory[item], item, align='>', width=longest_string_count + 4))
+        print('-' * (6 + len('count') + longest_string_count))
+        print("Total number of items: {}".format(total_items))
+
+
+def add_to_inventory(inventory, added_items):
+    for item in added_items:
+        if item in inventory:
+            inventory[item] += 1
+        else:
+            inventory[item] = 1
+    return inventory
+
+
+def attack(ch, board, strength, dexterity, energy, mana, x_player, y_player):
+    if ch == 'j':
+        if board[y_player][x_player + 1] in ['X', '→']:
+            board[y_player][x_player + 1] = '-'
+        else:
+            board[y_player][x_player + 1] = '-'
+            board[y_player][x_player + 2] = '-'
+    if ch == 'k':
+        for i in range(1, 8):
+            if board[y_player][x_player + i] in ['X']:
+                board[y_player][x_player + i] = 'x'
+                break
+
+    if ch == 'l':
+        board[y_player + 1][x_player + 1] = '*'
+        board[y_player][x_player + 1] = '*'
+        board[y_player - 1][x_player + 1] = '*'
+        board[y_player + 1][x_player] = '*'
+        board[y_player - 1][x_player] = '*'
+        board[y_player - 1][x_player - 1] = '*'
+        board[y_player][x_player - 1] = '*'
+        board[y_player + 1][x_player - 1] = '*'
+
+    return board
+
+
 def health(hp):
     health = []
     for i in range(0, hp):
@@ -188,15 +223,12 @@ def health(hp):
     return health
 
 
-
-
 def main():
     level = 0
-#    board = create_board(80,30,level)
+    board = create_board(80, 30, level)
     x_player = 1
     y_player = 1
     life = 5
-    inventory = {'gold coin': 3, 'torch': 4}
 
 
 
@@ -209,10 +241,14 @@ def main():
 
 
 
+    inventory = {'gold coin': 10, 'torch': 4}
+    for i in range(levels_to_create):
+        create_board(80, 30, i)
+
+
     while True:
         character = getch()
         force_exit(character)
-        os.system('clear')
         board = import_map('map{}.txt'.format(level), level)
         if not board[y_player + y_movement(character)][x_player + x_movement(character)] == 'X':
             x_player = x_player + x_movement(character)
@@ -246,11 +282,11 @@ def main():
     #        x_mob -= 1
 
 
-
-
         board_with_player = insert_player(board, x_player, y_player)
         board_with_player = insert_element(board, y_mob, x_mob, '😆')
         print_board(board_with_player)
+        os.system('clear')
+        print_board(attack(character, board, strength, dexterity, energy, mana, x_player, y_player))
         display_inventory(inventory, character)
         print("Name: {0}, Class: {1}, Stage:{2}, Life:{3}, Mana:{4}, EXP:{5}, Str:{6}, Dex:{7}, Ene:{8}, X:{9}, Y:{10}, X_mob:{11}, Y_mob:{12}".format(
         player_name, player_class, level, str(''.join(health(life))), mana, experience, strength, dexterity, energy, x_player, y_player, x_mob, y_mob))

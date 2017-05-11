@@ -94,11 +94,11 @@ def create_board(width, height,level,door_pos_right=19,door_pos_left=5):
 
 
 #    mob_list = ['🦁','🐷','🦂','😆','😈','☪','✡','🎠','🌝','♞','😻']
-    x_mob = random.randrange(2,28)
-    y_mob = random.randrange(2,78)
+    x_mob = random.randrange(2,78)
+    y_mob = random.randrange(2,28)
 #    random_mob = random.randrange(len(mob_list))
 #    insert_element(board, y_mob, x_mob, mob_list[random_mob])
-    insert_element(board, y_mob, x_mob, '😆')
+    insert_element(board, x_mob, y_mob, '😆')
 
 
     with open('map{}.txt'.format(level), 'w') as out:
@@ -234,8 +234,8 @@ def main():
 
 #    for i in range(levels_to_create):
     board = create_board(80, 30,1)
-    x_mob = random.randrange(2,28)
-    y_mob = random.randrange(2,78)
+    y_mob = random.randrange(2,28)
+    x_mob = random.randrange(2,78)
 
     #mob_list.pop(random_mob)
 
@@ -263,14 +263,25 @@ def main():
             y_player = 5
             level -= 1
         #    board = import_map('map{}.txt'.format(level), level)
-        if x_mob > y_player:
-           y_mob -= 1
-        if y_player > x_mob:
+        if x_player < x_mob:
             x_mob -= 1
-        if x_mob == y_player:
+            if y_mob > y_player:
+                y_mob -= 1
+        else:
             x_mob += 1
-        if y_mob == x_player:
+            if y_mob < y_player:
+                y_mob += 1
+
+        if y_mob > y_player:
             y_mob -= 1
+
+        if y_mob > y_player and x_mob > x_player:
+            y_mob -= 1
+            x_mob -= 1
+
+
+
+
 
 
             #y_mob -= 1
@@ -283,7 +294,7 @@ def main():
 
 
         board_with_player = insert_player(board, x_player, y_player)
-        board_with_player = insert_element(board, y_mob, x_mob, '😆')
+        board_with_player = insert_element(board, x_mob, y_mob, '😆')
         print_board(board_with_player)
         os.system('clear')
         print_board(attack(character, board, strength, dexterity, energy, mana, x_player, y_player))

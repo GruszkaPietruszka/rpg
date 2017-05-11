@@ -1,10 +1,11 @@
 from intro import player_name, player_class
 import random
-from time import sleep
+from time import time
 import os
 import csv
 
 levels_to_create = 3
+
 
 def getch():
     import sys, tty, termios
@@ -204,20 +205,28 @@ def attack(board, ch, level, stats, x_player, y_player):
         except IndexError:
             print("Out of range")
     if ch == 'k':
-        for i in range(1, 8):
-            if board[y_player][x_player + i] in ['X', '→']:
-                board[y_player][x_player + i] = 'x'
-                break #DODAJ TRY EXCEPT Z INDEXERROR
+        try:
+            for i in range(1, stats['dexterity'] + 1):
+                if board[y_player][x_player + i] in ['😠','🐷','🤐','😆','😈','😈','😸','🤓','🌝','😱','😻']:
+                    board[y_player][x_player + i] = 'x'
+                    with open('map{}.txt'.format(level), 'w') as out:
+                        out.write('\n'.join(str(''.join(row)) for row in board))
+                    out.close()
+                    stats['experience'] += 1
+                    export_stats(stats, 'stats.csv')
+        except IndexError:
+            print("Out of range")
 
     if ch == 'l':
-        board[y_player + 1][x_player + 1] = '*'
-        board[y_player][x_player + 1] = '*'
-        board[y_player - 1][x_player + 1] = '*'
-        board[y_player + 1][x_player] = '*'
-        board[y_player - 1][x_player] = '*'
-        board[y_player - 1][x_player - 1] = '*'
-        board[y_player][x_player - 1] = '*'
-        board[y_player + 1][x_player - 1] = '*'
+        if stats['energy'] > 0:
+            board[y_player + 1][x_player + 1] = '*'
+            board[y_player][x_player + 1] = '*'
+            board[y_player - 1][x_player + 1] = '*'
+            board[y_player + 1][x_player] = '*'
+            board[y_player - 1][x_player] = '*'
+            board[y_player - 1][x_player - 1] = '*'
+            board[y_player][x_player - 1] = '*'
+            board[y_player + 1][x_player - 1] = '*'
 
     return board
 
@@ -228,6 +237,28 @@ def health(hp):
         health.append("♥")
     return health
 
+
+def mob_movement(board, x_player, y_player, x_mob, y_mob, level):
+    insert_player(board, x_player, y_player)
+    if x_player < x_mob:
+        x_mob -= 1
+        if y_mob > y_player:
+            y_mob -= 1
+    else:
+        x_mob += 1
+        if y_mob < y_player:
+            y_mob += 1
+
+    if y_mob > y_player:
+        y_mob -= 1
+
+    if y_mob > y_player and x_mob > x_player:
+        y_mob -= 1
+        x_mob -= 1
+
+    board = insert_element(board, x_mob, y_mob, '😆')
+    import_map('map{}.txt'.format(level), level)
+    return board
 
 def main():
     level = 0
@@ -262,30 +293,16 @@ def main():
             x_player = 78
             y_player = 5
             level -= 1
-        if x_player < x_mob:
-            x_mob -= 1
-            if y_mob > y_player:
-                y_mob -= 1
-        else:
-            x_mob += 1
-            if y_mob < y_player:
-                y_mob += 1
 
-        if y_mob > y_player:
-            y_mob -= 1
-
-        if y_mob > y_player and x_mob > x_player:
-            y_mob -= 1
-            x_mob -= 1
 
         board_with_player = insert_player(board, x_player, y_player)
-        board_with_player = insert_element(board, x_mob, y_mob, '😆')
+        #board_with_player = mob_movement(board,x_player,y_player,x_mob,y_mob,level)
         print_board(board_with_player)
         os.system('clear')
         print_board(attack(board, character, level, stats, x_player, y_player))
         display_inventory(inventory, character)
-        print("Name: {0}, Class: {1}, Stage:{2}, Life:{3}, EXP:{4}, Str:{5}, Dex:{6}".format(
-        player_name, player_class, stats['player_level'], stats['life'], stats['experience'], stats['strength'], stats['dexterity']))
+        print("Name: {0}, Class: {1}, Level:{2}, Life:{3}, Stage: {4}, EXP: {5}, Str:{6}, Dex:{7}".format(
+        player_name, player_class, stats['player_level'], stats['life'], level, stats['experience'], stats['strength'], stats['dexterity']))
 
-
-main()
+if __name__ == '__main__':
+    main()

@@ -85,6 +85,7 @@ def create_board(width, height, level, door_pos_right=19, door_pos_left=5):
         insert_element(board, y_generator, x_generator, mob_list[random_mob])
         mob_list.pop(random_mob)
 
+
     item_list = ['🎽', '$', '💖', '🔪', '🔫']
     for i in range(2): # generates as much items as specified in range
         rand_pos_x = random.randrange(30, 79)
@@ -208,6 +209,14 @@ def add_to_inventory(inventory, added_items):
             inventory[item] += 1
         else:
             inventory[item] = 1
+    return inventory
+
+def sub_from_inventory(inventory, sub_items):
+    for item in sub_items:
+        if item in inventory:
+         inventory[item] -= 1
+        else:
+            inventory[item] = 0
     return inventory
 
 
@@ -373,11 +382,14 @@ def main():
     board = create_board(80, 30, level)
     x_player = 1
     y_player = 1
-    y_mob = random.randrange(2, 28)
-    x_mob = random.randrange(2, 78)
-    inventory = {'gold coin': 10, 'torch': 4}
+    y_mob = random.randrange(2,28)
+    x_mob = random.randrange(2,78)
+    inventory = {}
     for i in range(levels_to_create):
         create_board(80, 30, i)
+
+    item_list = {'🎽': 50,'$': 1,'🔪': 25,'🔫': 120,'💖': 1}
+    cap_left = 510
 
     while True:
         character = getch()
@@ -387,7 +399,8 @@ def main():
         with open('map{}.txt'.format(level), 'w') as out:
             out.write('\n'.join(str(''.join(row)) for row in board))
         board = import_map('map{}.txt'.format(level), level)
-
+        x_player_before = x_player
+        y_player_before = y_player
         if not board[y_player + y_movement(character)][x_player + x_movement(character)] in ['X','🏢','😠','🐷','🤐','😆','😈','😈','😸','🤓','🌝','😱','😻']:
             x_player = x_player + x_movement(character)
             y_player = y_player + y_movement(character)
@@ -400,6 +413,20 @@ def main():
             x_player = 78
             y_player = 5
             level -= 1
+            board = import_map('map{}.txt'.format(level),level)
+        if board[y_player][x_player] in item_list and item_list[board[y_player][x_player]] < cap_left:
+            inventory = add_to_inventory(inventory,board[y_player][x_player])
+            cap_left -= item_list[board[y_player][x_player]]
+        elif board[y_player][x_player] in item_list and item_list[board[y_player][x_player]] > cap_left:
+            x_player = x_player_before
+            y_player = y_player_before
+        # UNDER CONSTRUCTION: using potions
+        # if character == 'p' and int(inventory['💖']) > 0:
+        #     inventory['💖'] = int(inventory['💖']) -1
+        #     inventory = sub_from_inventory(inventory,'💖')
+        #     stats['life'] += int(stats['life']) + 1
+        #     stats = import_stats('stats.csv')
+
 
         board_with_player = insert_player(board, x_player, y_player)
         # board_with_player = mob_movement(board, x_player, y_player, x_mob, y_mob, level)
@@ -407,9 +434,9 @@ def main():
         os.system('clear')
         print_board(attack(board, character, level, stats, x_player, y_player))
         display_inventory(inventory, character)
-        print("Name: {0}, Class: {1}, Level:{2}, Life:{3}, Stage: {4}, EXP: {5}, Str:{6}, Dex:{7}".format(
-        player_name, player_class, stats['player_level'], stats['life'], level, stats['experience'], stats['strength'],
-        stats['dexterity']))
+        print("Name: {0}, Class: {1}, Stage:{2}, Life:{3}, EXP:{4}, Str:{5}, Dex:{6}, Cap:{7}".format(
+        player_name, player_class, level, stats['life'], stats['experience'], stats['strength'], stats['dexterity'],cap_left))
+
         if level == levels_to_create - 1:
             print_boss()
             end_time = int(time() - start_timer)

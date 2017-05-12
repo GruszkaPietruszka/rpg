@@ -1,7 +1,7 @@
 import csv
 from time import time
 
-levels_to_create = 2  # will be added as a feature, so player can choose how much he wants to play
+levels_to_create = 5  # will be added as a feature, so player can choose how much he wants to play
 start_timer = time()
 
 print('''

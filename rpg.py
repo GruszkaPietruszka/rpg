@@ -420,13 +420,13 @@ def main():
         elif board[y_player][x_player] in item_list and item_list[board[y_player][x_player]] > cap_left:
             x_player = x_player_before
             y_player = y_player_before
-        # UNDER CONSTRUCTION: using potions
-        # if character == 'p' and int(inventory['💖']) > 0:
-        #     inventory['💖'] = int(inventory['💖']) -1
-        #     inventory = sub_from_inventory(inventory,'💖')
-        #     stats['life'] += int(stats['life']) + 1
-        #     stats = import_stats('stats.csv')
-
+        try:
+            if int(inventory['💖']) > 0 and character == 'p':
+                inventory = sub_from_inventory(inventory,'💖')
+                stats['life'] = stats['life'] +1
+                export_stats(stats,'stats.csv')
+        except:
+            pass
 
         board_with_player = insert_player(board, x_player, y_player)
         # board_with_player = mob_movement(board, x_player, y_player, x_mob, y_mob, level)

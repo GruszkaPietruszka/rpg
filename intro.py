@@ -109,6 +109,7 @@ X  Here's how to play:              X
 X                                   X
 X  W, S, A, D - movement            X
 X  I - inventory                    X
+X  P - drink potion                 X
 X  J - melee attack                 X
 X  K - ranged attack                X
 X  L - magic attack                 X

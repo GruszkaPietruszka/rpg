@@ -1,4 +1,8 @@
 import csv
+from time import time
+
+levels_to_create = 2  # will be added as a feature, so player can choose how much he wants to play
+start_timer = time()
 
 print('''
 
@@ -46,6 +50,7 @@ X    Hey, you! What's your name?    X
 X                                   X
 XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX
         ''')
+
         player_class = ''
         while player_class not in ['1', '2', '3']:
             player_class = input('''
@@ -60,7 +65,8 @@ X  2 - Ranged                       X
 X  3 - Magic                        X
 X                                   X
 XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX
-        ''')
+            ''')
+
         if player_class == '1':
             player_class = 'Melee'
             capacity = 100
@@ -79,6 +85,7 @@ XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX
             strength = 1
             dexterity = 3
             energy = 1
+
         experience = 0
         player_level = 1
         lives = 5
@@ -93,7 +100,7 @@ XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX
             writer.writerow(['energy', energy])
             writer.writerow(['experience', experience])
 
-        print('''
+            print('''
 XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX
 X                                   X
 X  Perfect. Now you can go and see  X
@@ -102,15 +109,21 @@ X  Here's how to play:              X
 X                                   X
 X  W, S, A, D - movement            X
 X  I - inventory                    X
-X  ...                              X
+X  J - melee attack                 X
+X  K - ranged attack                X
+X  L - magic attack                 X
 X                                   X
 X          PRESS W to PLAY!         X
 X                                   X
 XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX
-        ''')
-        break
+            ''')
+            break
     elif start == '2':
-        pass
+        with open("hall_of_fame.csv", 'r') as hall_of_fame:
+            reader = csv.reader(hall_of_fame, delimiter=',')
+            print("HALL OF FAME:")
+            for row in reader:
+                print(row)
     elif start == '3':
         print('''
 XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX
